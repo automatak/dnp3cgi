@@ -6,31 +6,90 @@
 #include <openpal/container/Buffer.h>
 
 #include <cgicc/Cgicc.h>
+#include <cgicc/HTTPHTMLHeader.h>
+#include <cgicc/HTMLClasses.h>
+#include <stdexcept>
+
+#include "HexData.h"
 
 using namespace std;
 using namespace cgicc;
 using namespace openpal;
 using namespace opendnp3;
 
+enum class Mode : uint8_t
+{
+    Link,
+    Transport,
+    App
+};
+
+Mode GetMode(Cgicc& cgi);
+std::string GetHex(Cgicc& cgi);
+
 int main(int argc, char* argv[])
 {
+    cout << HTTPHTMLHeader() << endl;
+
     try
     {
         Cgicc cgi;
+        const auto MODE = GetMode(cgi);
+        const auto HEX = GetHex(cgi);
 
-        // Send HTTP header
-        //cout << HTTPHTMLHeader() << endl;
-        //HandleCGI(cgi);
+        openpal::LogRoot log(nullptr, "decoder", LogFilters(~0));
+        IDecoderCallbacks callback;
+        Decoder decoder(callback, log.GetLogger());
+
+        HexData hex(HEX, true);
+
+        switch(MODE)
+        {
+            case(Mode::Link):
+                decoder.DecodeLPDU(hex.GetSlice());
+                break;
+            case(Mode::Transport):
+                decoder.DecodeTPDU(hex.GetSlice());
+                break;
+            default:
+                decoder.DecodeAPDU(hex.GetSlice());
+                break;
+        }
     }
-    catch(exception& e)
+    catch(const std::exception& e)
     {
-        //cout << p(e.what()) << endl;
+        cout << "<pre class=\"error\">" << "An exception occured: " << "</pre>" << endl;
+        cout << "<pre class=\"error\">" << e.what() << "</pre>" << endl;
     }
 
-    openpal::LogRoot log(nullptr, "decoder", LogFilters(~0));
-    IDecoderCallbacks callback;
-    Decoder decoder(callback, log.GetLogger());
-
+    // Close the HTML document
+    cout << body() << html();
 
     return 0;
+}
+
+Mode GetMode(Cgicc& cgi)
+{
+    auto inputMode = cgi.getElement("mode");
+    if(inputMode == cgi.getElements().end())
+    {
+        throw std::invalid_argument("The decoder mode was not specified");
+    }
+
+    const auto VALUE = **inputMode;
+
+    if(VALUE == "app") return Mode::App;
+    if(VALUE == "transport") return Mode::Transport;
+    return Mode::Link;
+}
+
+std::string GetHex(Cgicc& cgi)
+{
+    auto hex = cgi.getElement("hex");
+    if(hex == cgi.getElements().end())
+    {
+        throw std::invalid_argument("The input hex was not specified");
+    }
+
+    return **hex;
 }
