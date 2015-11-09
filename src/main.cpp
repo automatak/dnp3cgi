@@ -46,9 +46,10 @@ int main(int argc, char* argv[])
         const auto MODE = GetMode(cgi);
         const auto HEX = GetHex(cgi);
 
+        const auto FILTERS = ~0 & (~(flags::LINK_RX_HEX | flags::LINK_TX_HEX));
 
         DecodeHandler handler;
-        openpal::LogRoot log(&handler, "decoder", LogFilters(~0));
+        openpal::LogRoot log(&handler, "decoder", LogFilters(FILTERS));
         auto logger = log.GetLogger();
         Decoder decoder(handler, logger);
 
