@@ -32,7 +32,11 @@ int main(int argc, char* argv[])
 {
     // Set up the HTML document
     cout << HTTPHTMLHeader() << endl;
-    cout << html() << head(title("decoded output")) << endl;
+    cout << html() << endl;
+    cout << head() << endl;
+    cout << title("decoded output") << endl;
+    cout << "<link rel=\"stylesheet\" type=\"text/css\" href=\"https://www.automatak.com/opendnp3/decoder/decoder.css\"/>" << std::endl;
+    cout << head() << endl;
     cout << body() << endl;
 
     try
