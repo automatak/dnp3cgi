@@ -4,6 +4,7 @@
 
 #include <openpal/logging/LogRoot.h>
 #include <openpal/container/Buffer.h>
+#include <openpal/logging/LogMacros.h>
 
 #include <cgicc/Cgicc.h>
 #include <cgicc/HTTPHTMLHeader.h>
@@ -45,11 +46,16 @@ int main(int argc, char* argv[])
         const auto MODE = GetMode(cgi);
         const auto HEX = GetHex(cgi);
 
+
         DecodeHandler handler;
         openpal::LogRoot log(&handler, "decoder", LogFilters(~0));
-        Decoder decoder(handler, log.GetLogger());
+        auto logger = log.GetLogger();
+        Decoder decoder(handler, logger);
 
         HexData hex(HEX, true);
+
+        FORMAT_HEX_BLOCK(logger, flags::EVENT, hex.GetSlice(), 18, 18);
+        handler.Indent();
 
         switch(MODE)
         {
