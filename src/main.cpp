@@ -67,7 +67,8 @@ int main(int argc, char* argv[])
     }
 
     // Close the HTML document
-    cout << body() << html() << std::endl;
+    cout << body() << std::endl;
+    cout << html() << std::endl;
 
     return 0;
 }
