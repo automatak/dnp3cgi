@@ -1,90 +1,56 @@
 #include "HexData.h"
 
-#include <stdexcept>
 #include <sstream>
+#include <stdexcept>
 
 using namespace std;
+using namespace openpal;
 
-HexData::HexData(const std::string& hex) :
-        m_input(RemoveSpaces(hex)),
-        m_size(Validate(m_input)),
-        m_buffer(new uint8_t[m_size])
+HexData::HexData(const std::string& hex, bool allowBadChars)
+    : HexData(RemoveBadCharacters(hex, allowBadChars))
 {
-    size_t size = m_input.size();
-    for(size_t index = 0, pos = 0; pos < size; ++index, pos += 2)
+
+}
+
+HexData::HexData(const std::string& valid) : m_buffer(valid.size()/2)
+{
+    auto NUM_BYTES = valid.size()/2;
+
+    for(size_t pos = 0; pos < NUM_BYTES; ++pos)
     {
         uint32_t val;
         std::stringstream ss;
-        ss << std::hex << m_input.substr(pos, 2);
+        ss << std::hex << valid.substr(2*pos, 2);
         if((ss >> val).fail())
         {
-            throw std::invalid_argument(hex);
+            throw std::invalid_argument("failed to convert hex");
         }
-        m_buffer[index] = static_cast<uint8_t>(val);
+        m_buffer[pos] = static_cast<uint8_t>(val);
     }
 }
 
-std::string HexData::Convert(const uint8_t* buff, size_t length, bool spaced)
+openpal::RSlice HexData::GetSlice() const
 {
-    std::ostringstream oss;
-    size_t last = length - 1;
-    for (size_t i = 0; i < length; i++)
+    return m_buffer.ToRSlice();
+}
+
+std::string HexData::RemoveBadCharacters(const std::string& hex, bool allowBadChars)
+{
+    ostringstream oss;
+
+    for(const char& c : hex)
     {
-        char c = buff[i];
-        oss << ToHexChar((c & 0xf0) >> 4) << ToHexChar(c & 0xf);
-        if (spaced && i != last)oss << " ";
-    }
-    return oss.str();
-}
-
-char HexData::ToHexChar(char c)
-{
-    return (c > 9) ? ('A' + (c - 10)) : ('0' + c);
-}
-
-const uint8_t* HexData::Buffer() const
-{
-    return m_buffer.get();
-}
-
-size_t HexData::Size() const
-{
-    return m_size;
-}
-
-std::string HexData::RemoveSpaces(const std::string& hex)
-{
-    std::string copy(hex);
-    RemoveSpacesInPlace(copy);
-    return copy;
-}
-
-void HexData::RemoveSpacesInPlace(std::string& s)
-{
-    size_t pos = s.find_first_of(' ');
-    if(pos != string::npos)
-    {
-        s.replace(pos, 1, "");
-        RemoveSpacesInPlace(s);
-    }
-}
-
-size_t HexData::Validate(const std::string& hex)
-{
-    for(char i : hex)
-    {
-        if(!IsHexChar(i))
+        if(IsHexChar(c))
         {
-            throw std::invalid_argument(hex);
+            oss << c;
+        }
+        else if(c != ' ')
+        {
+            throw std::invalid_argument("Bad character");
         }
     }
 
-    if(hex.size() % 2)
-    {
-        throw std::invalid_argument(hex);
-    }
-
-    return hex.size() / 2;
+    return oss.str();
 }
 
 bool HexData::IsHexChar(char i)

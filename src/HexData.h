@@ -2,39 +2,33 @@
 #ifndef HEXDATA_H
 #define HEXDATA_H
 
+#include <openpal/container/RSlice.h>
+#include <openpal/container/Buffer.h>
+
 #include <string>
 #include <cstdint>
-#include <memory>
 
 class HexData {
 
 public:
-    HexData(const std::string& hex);
+    HexData(const std::string& hex, bool allowBadChars);
 
-    const uint8_t* Buffer() const;
-    size_t Size() const;
-
-    static std::string Convert(const uint8_t* pBuff, size_t length, bool spaced = false);
+    openpal::RSlice GetSlice() const;
 
 private:
 
+    HexData(const std::string& validHex);
+
     static char ToHexChar(char c);
 
-    static std::string RemoveSpaces(const std::string& hex);
-
-    static void RemoveSpacesInPlace(std::string& s);
-
-    static size_t Validate(const std::string& hex);
+    static std::string RemoveBadCharacters(const std::string& hex, bool allowBadChars);
 
     static bool IsHexChar(char i);
     static bool IsDigit(char i);
     static bool IsUpperHexAlpha(char i);
     static bool IsLowerHexAlpha(char i);
 
-    std::string m_input;
-    size_t m_size;
-    std::unique_ptr<uint8_t[]> m_buffer;
-
+    openpal::Buffer m_buffer;
 };
 
 #endif
