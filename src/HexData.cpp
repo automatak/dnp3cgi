@@ -44,7 +44,7 @@ std::string HexData::RemoveBadCharacters(const std::string& hex, bool allowBadCh
         {
             oss << c;
         }
-        else if(c != ' ')
+        else if(c != ' ' && !allowBadChars)
         {
             throw std::invalid_argument("Bad character");
         }
