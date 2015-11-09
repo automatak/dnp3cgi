@@ -16,7 +16,7 @@ DecodeHandler::DecodeHandler() : indent(0)
 void DecodeHandler::Log( const LogEntry& entry )
 {
     auto clazz = GetClass(entry.GetFilters());
-    cout << "<pre class=" << GetClass(entry.GetFilters()) << " indent" << indent << ">" << std::endl;
+    cout << "<pre class=\"" << GetClass(entry.GetFilters()) << " indent" << indent << "\">" << std::endl;
     cout << entry.GetMessage() << std::endl;
     cout << "</pre>" << std::endl;
 }
