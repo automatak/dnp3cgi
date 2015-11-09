@@ -42,7 +42,10 @@ std::string DecodeHandler::GetClass(const LogFilters& filters)
             return "error";
         case(flags::APP_HEADER_RX):
         case(flags::APP_HEADER_TX):
-            return "object-header";
+            return "app-header";
+        case(flags::APP_OBJECT_RX):
+        case(flags::APP_OBJECT_TX):
+            return "app-object-header";
         case(flags::APP_HEX_RX):
         case(flags::APP_HEX_TX):
             return "app-hex";
