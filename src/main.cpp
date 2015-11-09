@@ -56,7 +56,6 @@ int main(int argc, char* argv[])
         HexData hex(HEX, true);
 
         FORMAT_HEX_BLOCK(logger, flags::EVENT, hex.GetSlice(), 18, 18);
-        handler.Indent();
 
         switch(MODE)
         {

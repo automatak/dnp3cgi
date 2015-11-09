@@ -12,8 +12,6 @@ class DecodeHandler final : public openpal::ILogHandler, public opendnp3::IDecod
 public:
     DecodeHandler();
 
-    void Indent() { ++indent; }
-
 protected:
 
     static std::string GetClass(const openpal::LogFilters& filters);
