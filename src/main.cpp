@@ -11,6 +11,7 @@
 #include <stdexcept>
 
 #include "HexData.h"
+#include "DecodeHandler.h"
 
 using namespace std;
 using namespace cgicc;
@@ -29,7 +30,10 @@ std::string GetHex(Cgicc& cgi);
 
 int main(int argc, char* argv[])
 {
+    // Set up the HTML document
     cout << HTTPHTMLHeader() << endl;
+    cout << html() << head(title("decoded output")) << endl;
+    cout << body() << endl;
 
     try
     {
@@ -37,9 +41,9 @@ int main(int argc, char* argv[])
         const auto MODE = GetMode(cgi);
         const auto HEX = GetHex(cgi);
 
-        openpal::LogRoot log(nullptr, "decoder", LogFilters(~0));
-        IDecoderCallbacks callback;
-        Decoder decoder(callback, log.GetLogger());
+        DecodeHandler handler;
+        openpal::LogRoot log(&handler, "decoder", LogFilters(~0));
+        Decoder decoder(handler, log.GetLogger());
 
         HexData hex(HEX, true);
 
