@@ -1,4 +1,7 @@
 *~
 
+#in-tree build
+/build
+
 #clion
 /.idea
