@@ -16,5 +16,5 @@ set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g")
 # ---- decoder exe
 file(GLOB_RECURSE dnp3decode_SRC ./src/*.cpp)
 add_executable(dnp3decode ${dnp3decode_SRC})
-target_link_libraries (dnp3decode opendnp3 openpal)
+target_link_libraries (dnp3decode opendnp3 openpal cgicc)
 

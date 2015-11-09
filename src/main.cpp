@@ -5,31 +5,32 @@
 #include <openpal/logging/LogRoot.h>
 #include <openpal/container/Buffer.h>
 
-#include <cstdio>
+#include <cgicc/Cgicc.h>
 
 using namespace std;
+using namespace cgicc;
 using namespace openpal;
 using namespace opendnp3;
 
 int main(int argc, char* argv[])
 {
+    try
+    {
+        Cgicc cgi;
+
+        // Send HTTP header
+        //cout << HTTPHTMLHeader() << endl;
+        //HandleCGI(cgi);
+    }
+    catch(exception& e)
+    {
+        //cout << p(e.what()) << endl;
+    }
+
     openpal::LogRoot log(nullptr, "decoder", LogFilters(~0));
     IDecoderCallbacks callback;
     Decoder decoder(callback, log.GetLogger());
 
-    Buffer buffer(4096);
-
-    while (true)
-    {
-        const size_t NUM_READ = fread(buffer(), 1, buffer.Size(), stdin);
-
-        if (NUM_READ == 0)
-        {
-            return 0;
-        }
-
-        decoder.DecodeLPDU(buffer.ToRSlice().Take(NUM_READ));
-    }
 
     return 0;
 }
