@@ -2,7 +2,7 @@
 #define DNP3DECODE_DECODEHANDLER_H
 
 #include <openpal/logging/ILogHandler.h>
-#include <opendnp3/decoder/IDecoderCallbacks.h>
+#include <dnp3decode/IDecoderCallbacks.h>
 
 #include <string>
 

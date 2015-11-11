@@ -1,6 +1,8 @@
 
-#include <opendnp3/decoder/Decoder.h>
+
 #include <opendnp3/LogLevels.h>
+
+#include <dnp3decode/Decoder.h>
 
 #include <openpal/logging/LogRoot.h>
 #include <openpal/container/Buffer.h>
