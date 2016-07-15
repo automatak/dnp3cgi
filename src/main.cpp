@@ -52,8 +52,10 @@ int main(int argc, char* argv[])
 
         DecodeHandler handler;
         openpal::LogRoot log(&handler, "decoder", LogFilters(FILTERS));
-        auto logger = log.GetLogger();
-        Decoder decoder(handler, logger);
+
+        auto logger = log.logger;
+
+        Decoder decoder(handler, log.logger);
 
         HexData hex(HEX, true);
 
