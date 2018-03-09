@@ -4,7 +4,7 @@
 
 #include <dnp3decode/Decoder.h>
 
-#include <openpal/logging/LogRoot.h>
+#include <openpal/logging/Logger.h>
 #include <openpal/container/Buffer.h>
 #include <openpal/logging/LogMacros.h>
 
@@ -50,12 +50,10 @@ int main(int argc, char* argv[])
 
         const auto FILTERS = ~0 & (~(flags::LINK_RX_HEX | flags::LINK_TX_HEX));
 
-        DecodeHandler handler;
-        openpal::LogRoot log(&handler, "decoder", LogFilters(FILTERS));
+        auto handler = std::make_shared<DecodeHandler>();
+        openpal::Logger logger(handler, "decoder", LogFilters(FILTERS));
 
-        auto logger = log.logger;
-
-        Decoder decoder(handler, log.logger);
+        Decoder decoder(*handler, logger);
 
         HexData hex(HEX, true);
 
