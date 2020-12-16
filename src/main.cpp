@@ -1,12 +1,11 @@
 
 
-#include <opendnp3/LogLevels.h>
+#include <opendnp3/logging/LogLevels.h>
 
-#include <dnp3decode/Decoder.h>
+#include <opendnp3/decoder/Decoder.h>
 
-#include <openpal/logging/Logger.h>
-#include <openpal/container/Buffer.h>
-#include <openpal/logging/LogMacros.h>
+#include <opendnp3/logging/Logger.h>
+#include <opendnp3/util/Buffer.h>
 
 #include <cgicc/Cgicc.h>
 #include <cgicc/HTTPHTMLHeader.h>
@@ -18,7 +17,6 @@
 
 using namespace std;
 using namespace cgicc;
-using namespace openpal;
 using namespace opendnp3;
 
 enum class Mode : uint8_t
@@ -48,16 +46,16 @@ int main(int argc, char* argv[])
         const auto MODE = GetMode(cgi);
         const auto HEX = GetHex(cgi);
 
-        const auto FILTERS = ~0 & (~(flags::LINK_RX_HEX | flags::LINK_TX_HEX));
+        //const auto FILTERS = ~0 & (~(flags::LINK_RX_HEX | flags::LINK_TX_HEX));
 
         auto handler = std::make_shared<DecodeHandler>();
-        openpal::Logger logger(handler, "decoder", LogFilters(FILTERS));
+        Logger logger(handler, ModuleId(), "decoder", levels::ALL_COMMS);
 
         Decoder decoder(*handler, logger);
 
         HexData hex(HEX, true);
 
-        FORMAT_HEX_BLOCK(logger, flags::EVENT, hex.GetSlice(), 18, 18);
+        //FORMAT_HEX_BLOCK(logger, flags::EVENT, hex.GetSlice(), 18, 18);
 
         switch(MODE)
         {

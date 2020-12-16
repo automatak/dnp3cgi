@@ -1,12 +1,12 @@
 #ifndef DNP3DECODE_DECODEHANDLER_H
 #define DNP3DECODE_DECODEHANDLER_H
 
-#include <openpal/logging/ILogHandler.h>
-#include <dnp3decode/IDecoderCallbacks.h>
+#include <opendnp3/logging/ILogHandler.h>
+#include <opendnp3/decoder/IDecoderCallbacks.h>
 
 #include <string>
 
-class DecodeHandler final : public openpal::ILogHandler, public opendnp3::IDecoderCallbacks
+class DecodeHandler final : public opendnp3::ILogHandler, public opendnp3::IDecoderCallbacks
 {
 
 public:
@@ -14,10 +14,10 @@ public:
 
 protected:
 
-    static std::string GetClass(const openpal::LogFilters& filters);
+    static std::string GetClass(const opendnp3::LogLevel& level);
 
 
-    virtual void Log( const openpal::LogEntry& entry ) override;
+    virtual void log(opendnp3::ModuleId module, const char* id, opendnp3::LogLevel level, char const* location, char const* message) override;
     virtual void PushIndent() override;
     virtual void PopIndent() override;
 
