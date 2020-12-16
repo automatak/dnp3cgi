@@ -2,18 +2,18 @@
 #ifndef HEXDATA_H
 #define HEXDATA_H
 
-#include <openpal/container/RSlice.h>
-#include <openpal/container/Buffer.h>
+#include <opendnp3/util/Buffer.h>
 
 #include <string>
 #include <cstdint>
+#include <array>
 
 class HexData {
 
 public:
     HexData(const std::string& hex, bool allowBadChars);
 
-    openpal::RSlice GetSlice() const;
+    opendnp3::Buffer GetSlice() const;
 
 private:
 
@@ -28,7 +28,7 @@ private:
     static bool IsUpperHexAlpha(char i);
     static bool IsLowerHexAlpha(char i);
 
-    openpal::Buffer m_buffer;
+    std::array<uint8_t, 4096> m_buffer;
 };
 
 #endif

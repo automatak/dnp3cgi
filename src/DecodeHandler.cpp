@@ -1,11 +1,10 @@
 
 #include "DecodeHandler.h"
 
-#include <opendnp3/LogLevels.h>
+#include <opendnp3/logging/LogLevels.h>
 #include <iostream>
 
 using namespace std;
-using namespace openpal;
 using namespace opendnp3;
 
 DecodeHandler::DecodeHandler() : indent(0)
@@ -13,11 +12,11 @@ DecodeHandler::DecodeHandler() : indent(0)
 
 }
 
-void DecodeHandler::Log( const LogEntry& entry )
+void DecodeHandler::log(ModuleId module, const char* id, LogLevel level, char const* location, char const* message)
 {
-    auto clazz = GetClass(entry.filters);
-    cout << "<pre class=\"" << GetClass(entry.filters) << " indent" << indent << "\">" << std::endl;
-    cout << entry.message << std::endl;
+    auto clazz = GetClass(level);
+    cout << "<pre class=\"" << GetClass(level) << " indent" << indent << "\">" << std::endl;
+    cout << message << std::endl;
     cout << "</pre>" << std::endl;
 }
 
@@ -31,34 +30,25 @@ void DecodeHandler::PopIndent()
     --indent;
 }
 
-std::string DecodeHandler::GetClass(const LogFilters& filters)
+std::string DecodeHandler::GetClass(const LogLevel& level)
 {
-    switch(filters.GetBitfield())
-    {
-        case(flags::EVENT):
-            return "event";
-        case(flags::ERR):
-        case(flags::WARN):
-            return "error";
-        case(flags::APP_HEADER_RX):
-        case(flags::APP_HEADER_TX):
-            return "app-header";
-        case(flags::APP_OBJECT_RX):
-        case(flags::APP_OBJECT_TX):
-            return "app-object-header";
-        case(flags::APP_HEX_RX):
-        case(flags::APP_HEX_TX):
-            return "app-hex";
-        case(flags::LINK_RX):
-        case(flags::LINK_TX):
-        case(flags::LINK_RX_HEX):
-        case(flags::LINK_TX_HEX):
-            return "link";
-        case(flags::TRANSPORT_RX):
-        case(flags::TRANSPORT_TX):
-            return "transport";
-        default:
-            return "unknown";
-    }
+    using namespace opendnp3::flags;
+
+    if (level == EVENT)
+        return "event";
+    else if (level == ERR || level == WARN)
+        return "error";
+    else if (level == APP_HEADER_RX || level == APP_HEADER_TX)
+        return "app-header";
+    else if (level == APP_OBJECT_RX || level == APP_OBJECT_TX)
+        return "app-object-header";
+    else if (level == APP_HEX_RX || level == APP_HEX_TX)
+        return "app-hex";
+    else if (level == LINK_RX || level == LINK_TX || level == LINK_RX_HEX || level == LINK_TX_HEX)
+        return "link";
+    else if (level == TRANSPORT_RX || level == TRANSPORT_TX)
+        return "transport";
+    else
+        return "unknown";
 }
 
